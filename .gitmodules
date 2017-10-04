@@ -1,0 +1,3 @@
+[submodule "ERC23"]
+	path = ERC23
+	url = git@github.com:aragon/ERC23.git

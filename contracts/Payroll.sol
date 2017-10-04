@@ -3,10 +3,11 @@ pragma solidity ^0.4.11;
 import "zeppelin/math/SafeMath.sol";
 import "zeppelin/lifecycle/Pausable.sol";
 import "zeppelin/token/ERC20Basic.sol";
+import "../ERC23/contracts/implementation/StandardReceiver.sol";
 import "./PayrollInterface.sol";
 
 
-contract Payroll is PayrollInterface, Pausable {
+contract Payroll is StandardReceiver, PayrollInterface, Pausable {
   using SafeMath for uint256; // Note that I've avoided using .div() as it's superfluous
 
   struct Employee {
@@ -35,7 +36,7 @@ contract Payroll is PayrollInterface, Pausable {
   // exchange rates via their token address.
   // However, for ETH, let's still assume current ETH functionality as a native asset
   // (e.g. addr.transfer() sends ETH, contracts hold their own ETH via this.balance, etc)
-  uint runwayLimit = 365;
+  uint256 runwayLimit = 365;
   address ethToken;
   address usdToken;
   mapping(address => uint256) tokenUsdBurnRates; // As yearly rate
@@ -181,17 +182,22 @@ contract Payroll is PayrollInterface, Pausable {
 
   /**
    * @dev Add ETH funds to contract.
-   *      Contract is limited to only one year of funds at any time to avoid putting too much into
-   *      the honeypot.
+   *      NOTE: Contract is limited to how much it can hold at any time to avoid putting too much
+   *      into the honeypot.
    */
-  function addFunds() external payable whenNotPaused {
-    // Limit contract funding to max of one year
-    require(calculatePayrollRunway() <= 365);
-
+  function addFunds() external payable limitRunway(runwayLimit) whenNotPaused {
     LogFundsAdded(msg.value);
   }
 
-  // function addTokenFunds()? // Use approveAndCall or ERC223 tokenFallback
+  /**
+   * @dev Add non-ETH token funds to contract.
+   *      NOTE: Contract is limited to how much it can hold at any time to avoid putting too much
+   *      into the honeypot.
+   */
+  function addTokenFunds() external tokenPayable limitRunway(runwayLimit) whenNotPaused {
+    // Require that we are watching the token
+    require(usdExchangeRates[tkn.addr] != 0);
+  }
 
   /**
    * @dev Only when paused by the owner, as a fallback mechanism. Allows owner to transfer all held
@@ -293,7 +299,15 @@ contract Payroll is PayrollInterface, Pausable {
         return uint256(-1);
       }
 
-      return this.balance / usdExchangeRates[ethToken] * 4 weeks / 1 days / currentBurnRate; // USD per day
+      uint256 heldUsdInEth = this.balance / usdExchangeRates[ethToken];
+      uint256 heldUsdInTokens = 0;
+      for (uint256 token = 0; token < watchedTokens.length; ++token) {
+        address curToken = watchedTokens[token];
+        heldUsdInTokens = heldUsdInTokens.add(ERC20Basic(curToken).balanceOf(address(this)) /
+                                              usdExchangeRates[curToken]);
+      }
+
+      return heldUsdInEth.add(heldUsdInTokens) * 4 weeks / 1 days / currentBurnRate; // USD per day
   }
 
   /* EMPLOYEE ONLY */
@@ -443,6 +457,14 @@ contract Payroll is PayrollInterface, Pausable {
   }
 
   /* MODIFIERS */
+  modifier limitRunway(uint256 limitDays) {
+    uint256 runway = calculatePayrollRunway();
+    // Either there's infinite runway (so balling we don't need employees), or we limit it to the
+    // requested number of days
+    require(runway <= limitDays || runway == uint256(-1));
+    _;
+  }
+
   modifier onlyActiveEmployee() {
     require(employees[employeeIds[msg.sender]].active);
     _;
