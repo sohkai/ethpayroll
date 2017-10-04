@@ -1,0 +1,217 @@
+{
+  "contract_name": "PayrollInterface",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "employeeId",
+          "type": "uint256"
+        },
+        {
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "name": "allowed",
+          "type": "bool"
+        }
+      ],
+      "name": "setEmployeeAllowedToken",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "employeeId",
+          "type": "uint256"
+        },
+        {
+          "name": "yearlyUSDSalary",
+          "type": "uint256"
+        }
+      ],
+      "name": "setEmployeeSalary",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "scapeHatch",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "employeeId",
+          "type": "uint256"
+        }
+      ],
+      "name": "removeEmployee",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "calculatePayrollBurnrate",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "calculatePayrollRunway",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "payday",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "accountAddress",
+          "type": "address"
+        },
+        {
+          "name": "allowedTokens",
+          "type": "address[]"
+        },
+        {
+          "name": "initialYearlyUSDSalary",
+          "type": "uint256"
+        }
+      ],
+      "name": "addEmployee",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "addFunds",
+      "outputs": [],
+      "payable": true,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "employeeId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getEmployee",
+      "outputs": [
+        {
+          "name": "employeeAccount",
+          "type": "address"
+        },
+        {
+          "name": "active",
+          "type": "bool"
+        },
+        {
+          "name": "lastPayDate",
+          "type": "uint256"
+        },
+        {
+          "name": "lastAllocationDate",
+          "type": "uint256"
+        },
+        {
+          "name": "yearlyUsdSalary",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "name": "usdExchangeRate",
+          "type": "uint256"
+        }
+      ],
+      "name": "setExchangeRate",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getEmployeeCount",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "tokens",
+          "type": "address[]"
+        },
+        {
+          "name": "distribution",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "determineAllocation",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    }
+  ],
+  "unlinked_binary": "0x",
+  "networks": {},
+  "schema_version": "0.0.5",
+  "updated_at": 1507235902557
+}
