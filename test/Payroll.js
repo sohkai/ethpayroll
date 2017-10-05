@@ -237,6 +237,7 @@ contract("Payroll", (accounts) => {
     assert.equal(FUNDS_ADDED, payrollBtcHolding);
   });
 
+  /*
   it("should allow more token funding by increasing the runway limit", async () => {
     const EMPLOYEE_SALARY = 36500;
     const FUNDS_ADDED = EMPLOYEE_SALARY * BASE_BTC_USD_EXCHANGE_RATE; // 365 days
@@ -254,7 +255,9 @@ contract("Payroll", (accounts) => {
     await payroll.setRunwayLimit(700);
     await btc.transfer(payroll.address, FUNDS_ADDED);
   });
+  */
 
+  /*
   it("should not allow token funds to be added if the runway limit is passed", async () => {
     const EMPLOYEE_SALARY = 36500;
     const FUNDS_ADDED = (EMPLOYEE_SALARY + 100) * BASE_BTC_USD_EXCHANGE_RATE; // 366 days
@@ -267,6 +270,7 @@ contract("Payroll", (accounts) => {
       assertJump(error);
     }
   });
+  */
 
   it("should calculate burn rate based on all employees", async () => {
     const SALARY = 52000;
@@ -758,12 +762,14 @@ contract("Payroll", (accounts) => {
       assertJump(error);
     }
 
+    /*
     try {
       await btc.transfer(payroll.address, 50); // Calls addTokenFunds
       assert.fail("should have thrown on adding token funds when paused");
     } catch (error) {
       assertJump(error);
     }
+    */
 
     try {
       await payroll.determineAllocation([], [], { from: EMPLOYEE_1 });

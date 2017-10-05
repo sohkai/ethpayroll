@@ -3,11 +3,11 @@ pragma solidity ^0.4.11;
 import "zeppelin/math/SafeMath.sol";
 import "zeppelin/lifecycle/Pausable.sol";
 import "zeppelin/token/ERC20Basic.sol";
-import "../ERC23/contracts/implementation/StandardReceiver.sol";
+// import "../ERC23/contracts/implementation/StandardReceiver.sol";
 import "./PayrollInterface.sol";
 
 
-contract Payroll is StandardReceiver, PayrollInterface, Pausable {
+contract Payroll is /*StandardReceiver, */PayrollInterface, Pausable {
   using SafeMath for uint256; // Note that I've avoided using .div() as it's superfluous
 
   struct Employee {
@@ -194,10 +194,12 @@ contract Payroll is StandardReceiver, PayrollInterface, Pausable {
    *      NOTE: Contract is limited to how much it can hold at any time to avoid putting too much
    *      into the honeypot.
    */
+  /*
   function addTokenFunds() external tokenPayable limitRunway(runwayLimit) whenNotPaused {
     // Require that we are watching the token
     require(usdExchangeRates[tkn.addr] != 0);
   }
+  */
 
   /**
    * @dev Only when paused by the owner, as a fallback mechanism. Allows owner to transfer all held
