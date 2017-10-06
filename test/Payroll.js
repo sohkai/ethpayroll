@@ -86,16 +86,55 @@ contract("Payroll", (accounts) => {
     assert.equal(numEmployees, 2);
   });
 
+  it("should not add an already added employee", async () => {
+    await payroll.addEmployee(EMPLOYEE_1, [btc.address, ant.address], 150000);
+
+    try {
+      await payroll.addEmployee(EMPLOYEE_1, [btc.address, ant.address], 150000);
+    } catch (error) {
+      assertJump(error);
+    }
+  });
+
+  it("should not add an employee without an account", async () => {
+    try {
+      await payroll.addEmployee(0, [btc.address, ant.address], 150000);
+    } catch (error) {
+      assertJump(error);
+    }
+  });
+
   it("should get an employee", async () => {
     const SALARY = 150000;
     await payroll.addEmployee(EMPLOYEE_1, [], SALARY);
-    const [account, active, lastPayDate, lastAllocationDate, yearlySalary] = await payroll.getEmployee(EMPLOYEE_1_ID);
 
+    const [account, active, lastPayDate, lastAllocationDate, yearlySalary] = await payroll.getEmployee(EMPLOYEE_1_ID);
     assert.equal(account, EMPLOYEE_1);
     assert.isTrue(active);
     assert.isAbove(lastPayDate, 0); // Should be sometime around now
     assert.equal(lastAllocationDate, 0); // Should be unset at first
     assert.equal(yearlySalary, SALARY);
+  });
+
+  it("should get a terminated employee", async () => {
+    const SALARY = 150000;
+    await payroll.addEmployee(EMPLOYEE_1, [], SALARY);
+    await payroll.removeEmployee(EMPLOYEE_1_ID);
+
+    const [account, active, lastPayDate, lastAllocationDate, yearlySalary] = await payroll.getEmployee(EMPLOYEE_1_ID);
+    assert.equal(account, EMPLOYEE_1);
+    assert.isFalse(active);
+    assert.isAbove(lastPayDate, 0); // Should be sometime around now
+    assert.equal(lastAllocationDate, 0); // Should be unset at first
+    assert.equal(yearlySalary, SALARY);
+  });
+
+  it("should not get a non-existent employee", async () => {
+    try {
+      await payroll.getEmployee(5);
+    } catch (error) {
+      assertJump(error);
+    }
   });
 
   /*
