@@ -15,6 +15,8 @@ and [test](./test/Payroll.js) for more details.
 ### Notes
 
 - The [contract](./contracts/Payroll.sol) has been liberally commented to flesh out the details
+- No upgrade path has been considered, but if one was required, it would be worthwhile to
+  encapsulate the data into separate employee registry and accounting contracts
 - The `payday()` function assumes that ETH has been implemented as a ERC20 contract, but the rest of
   the contract assumes usage of the native functions (i.e. `this.balance`, `address.transfer`)
 - The usage of the exchange rate oracle also assumes that it knows of an address for an ETH ERC20
@@ -22,6 +24,7 @@ and [test](./test/Payroll.js) for more details.
 - Getting time right is difficult, so this contracts opts to think in fixed-time weeks (28 days)
   rather than in months (resulting in ~13 months/year); using a weekly salary would make the math
   easier and more accurate
+- Given the difficulties with blockchain time, it may also be advantageous to use a time oracle
 - I assume all employees will be rushing to siphon their monthly salaries; there is no built-in
   mechanism for accumulating monthly salaries if they don't take money out before their pay date
   refreshes
